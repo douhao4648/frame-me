@@ -72,4 +72,5 @@ com.fm.demo
 - `spring.sql.init.schema-locations`：`classpath:schema.sql`
 - `mybatis-plus.global-config.db-config`：逻辑删除字段 `deleted`、主键策略 `assign_id`（雪花 ID）
 - `spring.http.serviceclient.tester.base-url`：http://localhost:9090（frame-me-tester 地址）
+- `spring.jackson.default-property-inclusion`：`non_null`，全局 JSON 序列化忽略 null 字段（跨服务透传时避免传递空字段）
 - `frame.me.swagger`：SpringDoc 分组配置（`demo-api`，匹配 `/api/**`）
