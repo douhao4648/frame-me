@@ -6,11 +6,16 @@
 
 ## 响应规范
 
-TODO：补充总工程统一的接口响应结构（如 `Response<T>` / `IResult<T>`）。
+- 接口契约统一返回 `frame-me-api` 的 `com.frame.me.api.result.IResult<T>`，默认实现为 `frame-me-starter-base` 的 `com.frame.me.base.result.Result<T>`（含静态工厂方法）。
+- 分页统一用 `PageQuery`（入参）+ `PageData<T>`（出参）。
+- 需对接老接口规范的工程，引入 `frame-me-adapter-starter`，由 `Result2ResponseAdvice` 自动将 `IResult<T>` 转为外部 `Response<T>`。
+- 细节见 [frame-me-parent/docs/conventions.md](../frame-me-parent/docs/conventions.md)。
 
 ## 异常体系
 
-TODO：补充总工程统一的异常基类与全局处理约定。
+- 统一以 `frame-me-starter-base` 的 `BusinessException` / `InternalException` / `RetryException` 为基础，由 `GlobalExceptionHandler` 全局捕获并转为统一 `Result`。
+- 状态码统一走 `com.frame.me.base.result.ResultCode` 枚举。
+- 细节见 [frame-me-parent/docs/conventions.md](../frame-me-parent/docs/conventions.md)。
 
 ## 编码风格
 
@@ -19,7 +24,11 @@ TODO：补充总工程统一的异常基类与全局处理约定。
 
 ## 数据访问约定
 
-TODO：补充跨工程的数据库命名、表前缀、分库分表、数据源路由等约定。
+- 统一使用 MyBatis-Plus；实体继承 `frame-me-starter-base` 的 `BaseEntity`（雪花 ID、`createTime`/`updateTime`/`deleted` 逻辑删除）或 `BaseVersionEntity`（额外 `version` 乐观锁）。
+- Mapper 必须标注 `@Mapper` 并继承 `BaseMapper<T>`。
+- **表名到实体名映射**：去掉第一个下划线前缀，如 `spo_fms_device` → `FmsDevice`。
+- 多数据源经 `frame-me-starter-dynamic-ds`（baomidou dynamic-datasource），用 `@DS("...")` 切换；默认自动创建 `master` 数据源。
+- 细节见 [frame-me-parent/docs/conventions.md](../frame-me-parent/docs/conventions.md) 与 [frame-me-parent/docs/modules.md](../frame-me-parent/docs/modules.md)。
 
 ## 子工程独立约定
 

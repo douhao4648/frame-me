@@ -22,4 +22,8 @@ Frame_Me/
 
 ## 跨服务调用约定
 
-TODO：补充统一的服务发现、接口鉴权、链路追踪、异常透传等约定。
+- 服务间调用统一用 **Spring HTTP Interface**：在服务方的 `xx-api` 模块用 `@HttpExchange` 声明接口契约（如 `frame-me-tester-api` 的 `IDemoApi`）。
+- 消费方在 `infrastructure/client/**` 下定义客户端接口，并通过配置类（`@ImportHttpServices`）装配为可注入的 HTTP 客户端。范例见 fm-demo：`com.fm.demo.infrastructure.client.tester.TesterDemoClient` + `infrastructure.config.DemoConfiguration` 调用 `frame-me-tester`。
+- 契约共享：消费方直接依赖服务方的 `xx-api` 复用其 DTO/Query/VO，不重复定义。
+- 异常透传：远端统一 `Result`/`Response` 结构原样回传，由消费方按统一响应规范处理。
+- 服务发现、鉴权、链路追踪等云组件能力预留在 `frame-me-starter-cloud`（当前为占位），后续接入 Nacos/Gateway/Sentinel 时在此补充。
