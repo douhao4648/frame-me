@@ -30,6 +30,14 @@
 - 多数据源经 `frame-me-starter-dynamic-ds`（baomidou dynamic-datasource），用 `@DS("...")` 切换；默认自动创建 `master` 数据源。
 - 细节见 [frame-me-parent/docs/conventions.md](../frame-me-parent/docs/conventions.md) 与 [frame-me-parent/docs/modules.md](../frame-me-parent/docs/modules.md)。
 
+## 基础设施能力
+
+由 `frame-me-parent` 提供，业务工程引入 `frame-me-booter` 默认获得多数据源、Redis、两级缓存能力，鉴权/云组件为占位，接口文档与老规范适配按需引入。能力清单与默认开关见 [architecture.md#脚手架横切能力](./architecture.md)，配置细节见 [frame-me-parent/docs/modules.md](../frame-me-parent/docs/modules.md)。
+
+- Redis：统一走 `RedisUtils`（`frame.me.redis.*`），分布式锁默认 `SET NX PX` 简单实现，引入 Redisson 后自动升级为可重入 + 看门狗续期。
+- 两级缓存：JetCache `@Cached(cacheType = BOTH)`，默认关闭（`frame.me.cache.enabled=true`），缓存对象需 `Serializable`。
+- 接口文档：`frame.me.swagger.enabled=true` 启用，按 `groups` 分组匹配路径。
+
 ## 子工程独立约定
 
 - `frame-me-parent`：见 [frame-me-parent/docs/conventions.md](../frame-me-parent/docs/conventions.md)
