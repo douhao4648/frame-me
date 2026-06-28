@@ -32,11 +32,14 @@
 
 ## 基础设施能力
 
-由 `frame-me-parent` 提供，业务工程引入 `frame-me-booter` 默认获得多数据源、Redis、两级缓存能力，鉴权/云组件为占位，接口文档与老规范适配按需引入。能力清单与默认开关见 [architecture.md#脚手架横切能力](./architecture.md)，配置细节见 [frame-me-parent/docs/modules.md](../frame-me-parent/docs/modules.md)。
+由 `frame-me-parent` 提供，业务工程引入 `frame-me-booter` 默认获得多数据源、Redis、两级缓存、审计日志、配置加密能力，鉴权/云组件为占位，接口文档、老规范适配、SSE/WebSocket 推送按需引入。能力清单与默认开关见 [architecture.md#脚手架横切能力](./architecture.md)，配置细节见 [frame-me-parent/docs/modules.md](../frame-me-parent/docs/modules.md)。
 
-- Redis：统一走 `RedisUtils`（`frame.me.redis.*`），分布式锁默认 `SET NX PX` 简单实现，引入 Redisson 后自动升级为可重入 + 看门狗续期。
-- 两级缓存：JetCache `@Cached(cacheType = BOTH)`，默认关闭（`frame.me.cache.enabled=true`），缓存对象需 `Serializable`。
-- 接口文档：`frame.me.swagger.enabled=true` 启用，按 `groups` 分组匹配路径。
+- Redis：统一走 `RedisUtils`（`me.redis.*`），分布式锁默认 `SET NX PX` 简单实现，引入 Redisson 后自动升级为可重入 + 看门狗续期。
+- 两级缓存：JetCache `@Cached(cacheType = BOTH)`，默认关闭（`me.cache.enabled=true`），缓存对象需 `Serializable`。
+- 审计日志：方法标注 `@AuditLog` 即记录动作/参数/返回/异常/耗时（`me.audit.*`，默认开启打印本地日志），配 `me.audit.target-service` 后经事件桥接发往审计服务。
+- 配置加密：敏感值写成 `ME(密文)`，启动时由 Jasypt 解密（`me.encrypt.*`），主密码经环境变量 `ME_ENCRYPT_PASSWORD` 注入、不入库。
+- SSE / WebSocket：`frame-me-starter-sse-mvc`（`me.sse.*`）、`frame-me-starter-ws-mvc`（`me.ws.mvc.*`）按需引入，支持按事件类型广播与按接收者定向推送，订阅 `MeApplicationEvent` 自动转发。
+- 接口文档：`me.swagger.enabled=true` 启用，按 `groups` 分组匹配路径。
 
 ## 子工程独立约定
 
