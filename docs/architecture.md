@@ -36,6 +36,7 @@ Frame_Me/
 
 | 能力 | starter | 默认 | 说明 |
 |---|---|---|---|
+| 数据访问（MyBatis-Plus） | `frame-me-starter-mybatis-plus` | 开启 | `BaseEntity`、分页插件、乐观锁、雪花 ID、公共字段自动填充 |
 | 多数据源 | `frame-me-starter-dynamic-ds` | 开启 | baomidou dynamic-datasource，`@DS` 切换 |
 | Redis / 分布式锁 | `frame-me-starter-multi-redis` | 开启 | `RedisUtils` + 可选 Redisson 高阶能力 |
 | 两级缓存 | `frame-me-starter-l1l2-cache` | 关闭 | JetCache：Caffeine(L1) + Redis(L2)，`me.cache.enabled` 开启 |
@@ -46,6 +47,7 @@ Frame_Me/
 
 按需引入（不纳入 `frame-me-booter`）：
 
+- 数据访问（MyBatis-Flex）`frame-me-starter-mybatis-flex`（MyBatis-Plus 替代方案，与 `frame-me-starter-mybatis-plus` 二选一）。
 - 接口文档 `frame-me-starter-doc-openapi`（SpringDoc OpenAPI，`me.swagger.enabled` 开启）。
 - 老接口规范适配 `frame-me-adapter-starter`（`IResult` → `Response` 转换，可被业务自定义适配层替换）。
 - SSE 推送 `frame-me-starter-sse-mvc`（`me.sse.enabled`，按事件类型广播 / 按接收者定向推送）。

@@ -24,8 +24,8 @@
 
 ## 数据访问约定
 
-- 统一使用 MyBatis-Plus；实体继承 `frame-me-starter-base` 的 `BaseEntity`（雪花 ID、`createTime`/`updateTime`/`deleted` 逻辑删除）或 `BaseVersionEntity`（额外 `version` 乐观锁）。
-- Mapper 必须标注 `@Mapper` 并继承 `BaseMapper<T>`。
+- 默认使用 MyBatis-Plus（`frame-me-starter-mybatis-plus`），实体继承 `BaseEntity`（雪花 ID、`createTime`/`updateTime`/`deleted` 逻辑删除）或 `BaseVersionEntity`（额外 `version` 乐观锁）；亦可选用 MyBatis-Flex（`frame-me-starter-mybatis-flex`），二者二选一。
+- Mapper 必须标注 `@Mapper` 并继承对应的 `BaseMapper<T>`（MyBatis-Plus 或 MyBatis-Flex）。
 - **表名到实体名映射**：去掉第一个下划线前缀，如 `spo_fms_device` → `FmsDevice`。
 - 多数据源经 `frame-me-starter-dynamic-ds`（baomidou dynamic-datasource），用 `@DS("...")` 切换；默认自动创建 `master` 数据源。
 - 细节见 [frame-me-parent/docs/conventions.md](../frame-me-parent/docs/conventions.md) 与 [frame-me-parent/docs/modules.md](../frame-me-parent/docs/modules.md)。
