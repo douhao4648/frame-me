@@ -27,12 +27,12 @@ Frame_Me/
 - 契约共享：消费方直接依赖服务方的 `xx-api` 复用其 DTO/Query/VO，不重复定义。
 - 异常透传：远端统一 `Result`/`Response` 结构原样回传，由消费方按统一响应规范处理。
 - 跨服务事件：进程内用 Spring `ApplicationEvent`（`MeApplicationEvent`）解耦，跨服务通过可插拔 transport（Redis Pub/Sub，MQ 可扩展）桥接，统一开关 `me.event-bridge.*`。审计日志、SSE/WS 推送均基于此机制。详见 [frame-me-parent/docs/guides/event-bridge.md](../frame-me-parent/docs/guides/event-bridge.md)。
-- 鉴权：`frame-me-starter-auth` 已实现认证抽象层（`AuthContext`、`@LoginUser`/`@Anonymous`、`IAuthService`/`IAuthUserResolver` SPI、默认请求头兜底解析器，已纳入 booter）；具体实现按需引入 `frame-me-starter-auth-jwt`（JWT 登录/刷新）与 `frame-me-starter-auth-rbac`（RBAC 授权 + 数据权限）。
+- 鉴权：`frame-me-starter-auth` 已实现认证抽象层（`AuthContext`、`@LoginUser`/`@Anonymous`、`IAuthService`/`IAuthUserResolver` SPI、默认请求头兜底解析器，已纳入 boot）；具体实现按需引入 `frame-me-starter-auth-jwt`（JWT 登录/刷新）或 `frame-me-starter-auth-sa-token`（Sa-Token 会话治理，踢人/封禁/在线会话），以及 `frame-me-starter-auth-rbac`（RBAC 授权 + 数据权限）。
 - 服务发现、网关、链路追踪等云组件能力预留在 `frame-me-starter-cloud`（当前为占位），后续接入 Nacos/Gateway/Sentinel 时在此补充。
 
 ## 脚手架横切能力
 
-`frame-me-parent` 通过 `frame-me-booter` 为业务 `xx-service` 默认提供以下横切能力，引入 `frame-me-booter` 即可一键获得（详见 [frame-me-parent/docs/modules.md](../frame-me-parent/docs/modules.md)）：
+`frame-me-parent` 通过 `frame-me-boot` 为业务 `xx-service` 默认提供以下横切能力，引入 `frame-me-boot` 即可一键获得（详见 [frame-me-parent/docs/modules.md](../frame-me-parent/docs/modules.md)）：
 
 | 能力 | starter | 默认 | 说明 |
 |---|---|---|---|
@@ -46,12 +46,13 @@ Frame_Me/
 | 消息通知 | `frame-me-starter-msg-notify` | 开启 | `INotifySender` 统一发送，邮件 / Webhook / 短信多通道 |
 | 云组件 | `frame-me-starter-cloud` | 占位 | 预留 Nacos/Gateway/Sentinel |
 
-按需引入（不纳入 `frame-me-booter`）：
+按需引入（不纳入 `frame-me-boot`）：
 
 - 数据访问 `frame-me-starter-mybatis-plus` 或 `frame-me-starter-mybatis-flex`（二选一）。
 - 多数据源 `frame-me-starter-dynamic-ds`（baomidou dynamic-datasource，`@DS` 切换）。
 - RBAC 授权 `frame-me-starter-auth-rbac`（`@RequireAuth` SpEL、数据权限、可选 Redis 权限后端）。
 - JWT 认证 `frame-me-starter-auth-jwt`（接管 auth 抽象层，登录/登出/刷新接口）。
+- Sa-Token 认证 `frame-me-starter-auth-sa-token`（接管 auth 抽象层，会话治理：踢人/封禁/在线会话/多端互斥，与 jwt 二选一）。
 - 接口文档 `frame-me-starter-doc-openapi`（SpringDoc OpenAPI，`me.swagger.enabled` 开启）。
 - 老接口规范适配 `frame-me-adapter-starter`（`IResult` → `Response` 转换，可被业务自定义适配层替换）。
 - WebSocket `frame-me-starter-ws-mvc`（`me.ws.mvc.enabled`，原生 WebSocket 全双工，广播 / 定向推送）。
