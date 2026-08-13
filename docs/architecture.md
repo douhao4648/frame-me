@@ -28,7 +28,7 @@ Frame_Me/
 - 异常透传：远端统一 `Result`/`Response` 结构原样回传，由消费方按统一响应规范处理。
 - 跨服务事件：进程内用 Spring `ApplicationEvent`（`MeApplicationEvent`）解耦，跨服务通过可插拔 transport（Redis Pub/Sub，MQ 可扩展）桥接，统一开关 `me.event-bridge.*`。审计日志、SSE/WS 推送均基于此机制。详见 [frame-me-parent/docs/guides/event-bridge.md](../frame-me-parent/docs/guides/event-bridge.md)。
 - 鉴权：`frame-me-starter-auth` 已实现认证抽象层（`AuthContext`、`@LoginUser`/`@Anonymous`、`IAuthService`/`IAuthUserResolver` SPI、默认请求头兜底解析器，已纳入 boot）；具体实现按需引入 `frame-me-starter-auth-jwt`（JWT 登录/刷新）或 `frame-me-starter-auth-sa-token`（Sa-Token 会话治理，踢人/封禁/在线会话），以及 `frame-me-starter-auth-rbac`（RBAC 授权 + 数据权限）。
-- 服务发现、网关、链路追踪等云组件能力预留在 `frame-me-starter-cloud`（当前为占位），后续接入 Nacos/Gateway/Sentinel 时在此补充。
+- 云组件：`frame-me-starter-cloud` 为云基础底座（Spring Cloud 配置刷新体系、配置中心无关的刷新解密、注册中心无关的优雅下线编排，已纳入 boot）；Nacos 配置中心 + 注册中心按需引入 `frame-me-starter-cloud-nacos`（极薄封装 SCA 官方 starter，配置走原生 `spring.cloud.nacos.*`）。Gateway/Sentinel 等后续以 `frame-me-starter-cloud-xxx` 形式扩展。
 
 ## 脚手架横切能力
 
@@ -44,10 +44,11 @@ Frame_Me/
 | 配置密钥加密 | `frame-me-starter-sensi-encrypt` | 开启 | Jasypt 解密配置中的 `ME(密文)`，主密码由环境变量注入 |
 | SSE 推送 | `frame-me-starter-sse-mvc` | 开启 | `me.sse.enabled`，按事件类型广播 / 按接收者定向推送 |
 | 消息通知 | `frame-me-starter-msg-notify` | 开启 | `INotifySender` 统一发送，邮件 / Webhook / 短信多通道 |
-| 云组件 | `frame-me-starter-cloud` | 占位 | 预留 Nacos/Gateway/Sentinel |
+| 云基础底座 | `frame-me-starter-cloud` | 开启 | 配置刷新体系、刷新解密、优雅下线编排；具体云组件独立为 `frame-me-starter-cloud-xxx` |
 
 按需引入（不纳入 `frame-me-boot`）：
 
+- Nacos 配置中心/注册中心 `frame-me-starter-cloud-nacos`（SCA 官方 starter 极薄封装，配置走 `spring.cloud.nacos.*`）。
 - 数据访问 `frame-me-starter-mybatis-plus` 或 `frame-me-starter-mybatis-flex`（二选一）。
 - 多数据源 `frame-me-starter-dynamic-ds`（baomidou dynamic-datasource，`@DS` 切换）。
 - RBAC 授权 `frame-me-starter-auth-rbac`（`@RequireAuth` SpEL、数据权限、可选 Redis 权限后端）。

@@ -2,6 +2,13 @@
 
 `Frame_Me` 是本仓库的总工程目录，用于聚合多个独立子工程。每个子工程在独立子目录中维护，拥有各自的构建、测试与部署能力。
 
+## 子工程
+
+| 子工程 | 说明 |
+|---|---|
+| [`frame-me-parent`](./frame-me-parent) | Spring Boot 4.0.7 + Java 25 多模块 Maven 脚手架（starter 体系：base/auth/redis/cache/审计/加密/云组件等） |
+| [`fm-demo`](./fm-demo) | 基于 `frame-me-parent` 的演示聚合服务（`fm-demo-api` + `fm-demo-service`） |
+
 ## 文档导航
 
 本仓库通过 `docs/` 知识库维护架构、约定、构建说明等文档：
