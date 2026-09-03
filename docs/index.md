@@ -29,6 +29,7 @@
 | [modules.md](./modules.md) | 总工程内各顶层目录/服务的职责、依赖、关键类是什么？ |
 | [testing.md](./testing.md) | 总工程层面的测试策略、集成测试如何运行？ |
 | [reference.md](./reference.md) | 关键文件路径、子工程入口、已知扩展点在哪里？ |
+| [deployment-yunxiao.md](./deployment-yunxiao.md) | 子工程如何通过云效流水线部署到 ACK？ |
 
 ## 关键约定一句话
 

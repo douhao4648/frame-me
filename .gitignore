@@ -54,3 +54,6 @@ Thumbs.db
 #CLAUDE.md
 fm-demo
 frame-me-parent
+
+# 本地敏感信息（身份、凭证等，不入库）
+.secrets/

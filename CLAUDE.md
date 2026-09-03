@@ -22,6 +22,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `docs/modules.md` | 总工程内各顶层目录/服务职责 |
 | `docs/testing.md` | 总工程测试策略、集成测试 |
 | `docs/reference.md` | 关键文件路径、子工程入口、已知扩展点 |
+| `docs/deployment-yunxiao.md` | 部署、云效流水线、ACK 相关操作（**含最高优先级安全约束：云效一切写操作禁止直接执行，详见文档**） |
+
+> ⛔ **云效安全约束（不可违背）**：凡会影响线上发布或应用的云效操作（创建、修改、编辑、删除、运行、部署、回滚等），一律不得直接执行，必须人工审核确认 —— 任何模式（含 auto mode）都不例外；只允许只读查询（list/get/search）。一次性授权不扩展到其他操作。细则见 `docs/deployment-yunxiao.md`。
 
 检索顺序建议：
 1. 先读 `docs/index.md` 定位主题；

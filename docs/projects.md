@@ -8,6 +8,7 @@
 |---|---|---|---|
 | `frame-me-parent` | `./frame-me-parent` | [CLAUDE.md](../frame-me-parent/CLAUDE.md) / [docs/index.md](../frame-me-parent/docs/index.md) | Spring Boot 4.0.7 + Java 25 多模块 Maven 脚手架 |
 | `fm-demo` | `./fm-demo` | [CLAUDE.md](../fm-demo/CLAUDE.md) / [docs/index.md](../fm-demo/docs/index.md) | 基于 `frame-me-parent` 的演示聚合服务 |
+| `docker` | `./docker` | [README.md](../docker/README.md) | 本地测试基础设施 Docker 编排（Nacos 等），非代码工程 |
 
 ## 如何维护本页
 

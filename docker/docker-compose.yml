@@ -1,0 +1,40 @@
+services:
+  nacos:
+    image: nacos/nacos-server:v3.2.4
+    container_name: nacos
+    ports:
+      - "8848:8848"   # OpenAPI / 客户端
+      - "9848:9848"   # gRPC（客户端 2.x 必须）
+      - "8080:8080"   # 控制台（3.x 起独立端口）
+    environment:
+      MODE: standalone                     # 单机模式，本地测试够用
+      NACOS_AUTH_ENABLE: "false"           # 本地不开鉴权，省得配 token
+      # 3.2.x 启动脚本强制校验以下三项，即使关了鉴权也得给值（本地随意填）
+      NACOS_AUTH_TOKEN: SefQisGPCp2PKktyDOyz5rIbbauGWesmAXoBwg/8pzB3gf/K5WBRTRzxW567yQhz
+      NACOS_AUTH_IDENTITY_KEY: serverIdentity
+      NACOS_AUTH_IDENTITY_VALUE: local-dev
+      JVM_XMS: 512m
+      JVM_XMX: 512m
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.4
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root    # 用户名 root / 密码 root
+      TZ: Asia/Shanghai
+    volumes:
+      - mysql-data:/var/lib/mysql  # 数据持久化，容器删了数据还在
+    restart: unless-stopped
+
+  redis:
+    image: redis:8
+    container_name: redis
+    ports:
+      - "6379:6379"                # 无密码，仅限本地
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
