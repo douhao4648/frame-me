@@ -10,6 +10,8 @@
 > - 允许的：只读操作（`list_*` / `get_*` / `search_*`），用于查看现状、拉模板、做方案
 > - 正确做法：AI 只负责**生成方案与待执行的命令/YAML**，由人审核后自行执行；或人在会话中**逐次明确授权**某一个具体操作后才执行（一次性授权不扩展到其他操作）
 > - 本约束优先级高于一切"自动执行""批量处理"类指令，会话压缩/换机后依然有效
+>
+> 🔐 **隐私信息存储规则**：密钥/凭证/云上资源 ID 一律存 `.secrets/*.env`（已 gitignore），禁止写入 git 可追踪文件。详见根 `CLAUDE.md`。
 
 ## 云效访问方式
 
@@ -69,7 +71,7 @@ git push codeup main   # Codeup 做镜像，避免两边各自提交导致分叉
 ```
 子工程 (如 fm-demo)
   ├─ Dockerfile              # 多阶段：Maven 构建 → JRE 运行（适配 ACK）
-  ├─ k8s/deployment.yaml     # Deployment + Service + 探针 + resources
+  ├─ deployment.yaml         # Deployment + Service + 探针 + resources（与 Dockerfile 同级）
   └─ 云效 Flow 流水线（标准 Java 模板）
        节点1: Java 构建 (mvn package)
        节点2: 镜像构建并推送 ACR
@@ -96,11 +98,20 @@ ACR 镜像仓库连接、ACK 集群连接均为**组织级服务连接**，一�
    ```
 5. 触发运行并查状态：`flow-create-pipeline-run` → `flow-get-latest-pipeline-run`（status 非 `FAIL` 即成功）。
 
-## 待办清单（首次执行前确认）
+## 待办清单
 
-- [ ] 目标子工程（候选：`fm-demo`）
-- [ ] 参照的现有 Java 流水线（从 `flow-list-pipelines` 结果中挑）
-- [ ] 构建分支（默认 `main`）
+### frame-me-gateway（daily 环境）
+
+- [x] 目标子工程：`frame-me-gateway`
+- [x] 参照的现有 Java 流水线：模板 ID 存 `.secrets/gateway-deploy.env` 的 `YUNXIAO_TEMPLATE_PIPELINE_ID`
+- [x] 构建分支：`.secrets/gateway-deploy.env` 的 `GITHUB_BRANCH`
 - [ ] GitHub 服务连接是否已建（未建则控制台授权一次）
-- [ ] ACK 集群 / namespace / deployment 名
-- [ ] 编写子工程 `Dockerfile` 与 `k8s/deployment.yaml`（参考现有 Java 项目写法）
+- [ ] ACK 集群 / namespace / deployment 名：daily / `frame-me-gateway`
+- [x] 编写子工程 `Dockerfile` 与 `deployment.yaml`（与 Dockerfile 同级，见 `frame-me-parent/frame-me-launcher/frame-me-gateway/`）
+- [x] 端到端部署文档：`docs/deployment-gateway-daily.md`
+
+### 通用待办（首次执行前确认）
+
+- [ ] GitHub 服务连接（云效控制台 → 流水线 Flow → 服务连接管理 → 新建 GitHub 服务连接，OAuth 授权一次）
+- [ ] MSE Nacos 实例已开通，拿到地址/AK/SK
+- [ ] ACR 镜像仓库已创建（仓库名 `.secrets/gateway-deploy.env` 的 `ACR_REPO`）

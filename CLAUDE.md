@@ -26,6 +26,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 > ⛔ **云效安全约束（不可违背）**：凡会影响线上发布或应用的云效操作（创建、修改、编辑、删除、运行、部署、回滚等），一律不得直接执行，必须人工审核确认 —— 任何模式（含 auto mode）都不例外；只允许只读查询（list/get/search）。一次性授权不扩展到其他操作。细则见 `docs/deployment-yunxiao.md`。
 
+> 🔐 **隐私信息存储规则（不可违背）**：一切密钥、凭证、云上资源标识（AK/SK、密码、token、服务连接 ID、实例地址等）**不得写入任何会被 git 追踪的文件**——包括代码、配置文件、部署 yaml、文档示例。统一存放 `.secrets/*.env`（已 gitignore），使用时 `source` 加载环境变量。云效 PAT 只走环境变量 `ALIBABA_CLOUD_YUNXIAO_ACCESS_TOKEN`，不写入任何文件。交付产物（Dockerfile、K8s yaml、文档）里只允许出现环境变量引用或 `<占位符>`，禁止出现具体值。
+
 检索顺序建议：
 1. 先读 `docs/index.md` 定位主题；
 2. 若问题属于某个子工程，按 `docs/projects.md` 进入对应子工程的 `CLAUDE.md` → `docs/index.md`；
