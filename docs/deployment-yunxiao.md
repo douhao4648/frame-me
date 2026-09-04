@@ -4,11 +4,11 @@
 
 > ## ⛔ 最高优先级安全约束（不可违背）
 >
-> **凡会影响线上发布或应用的云效操作 —— 包括但不限于创建、修改、编辑、删除、运行、部署、回滚 —— AI 助手一律不得直接执行，必须人工审核确认。任何模式下都不例外，包括 auto mode / 自动批准模式。**
+> **凡非本机的远程操作——云效、ACK、ACR、Codeup、GitHub、SSH 远程主机、任何云服务或第三方 API——只要是非只读操作（创建、修改、编辑、删除、运行、部署、回滚、push、发布等会改变远端状态的动作），AI 助手一律不得直接执行。** 必须先**列出待执行的非只读操作清单**，等待人工确认；当且仅当用户回复 **`goon`** 后才执行。任何模式下都不例外，包括 auto mode / 自动批准模式。
 >
-> - 禁止直接执行的：`flow-create-pipeline`、`flow-update-pipeline`、`flow-delete-pipeline`、`flow-create-pipeline-run`（触发运行）、AppStack 部署/发布/回滚、以及任何其他 `create_*` / `update_*` / `delete_*` / `execute_*` / `retry_*` / `rollback_*` 等会改变线上状态的云效操作
-> - 允许的：只读操作（`list_*` / `get_*` / `search_*`），用于查看现状、拉模板、做方案
-> - 正确做法：AI 只负责**生成方案与待执行的命令/YAML**，由人审核后自行执行；或人在会话中**逐次明确授权**某一个具体操作后才执行（一次性授权不扩展到其他操作）
+> - 禁止直接执行的（示例）：`flow-create-pipeline`、`flow-update-pipeline`、`flow-delete-pipeline`、`flow-create-pipeline-run`（触发运行）、AppStack 部署/发布/回滚、ACK 集群/节点池创建修改删除、`kubectl apply/delete` 到远端集群、`git push` 到远端、`gh` 创建/合并 PR、以及任何其他 `create_*` / `update_*` / `delete_*` / `execute_*` / `retry_*` / `rollback_*` / `deploy_*` 等会改变远端状态的操作
+> - 允许的：只读操作（`list_*` / `get_*` / `search_*` / `describe` / `logs` / 状态查询），用于查看现状、拉模板、做方案
+> - 正确做法：AI 先列出本次将要执行的所有非只读远程操作清单 → 用户回复 `goon` → AI 执行清单中列明的操作；`goon` 授权仅对清单中列明的操作生效，不扩展到其他操作或后续新操作，每个新操作都要重新列清单、重新等 `goon`
 > - 本约束优先级高于一切"自动执行""批量处理"类指令，会话压缩/换机后依然有效
 >
 > 🔐 **隐私信息存储规则**：密钥/凭证/云上资源 ID 一律存 `.secrets/*.env`（已 gitignore），禁止写入 git 可追踪文件。详见根 `CLAUDE.md`。

@@ -22,9 +22,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `docs/modules.md` | 总工程内各顶层目录/服务职责 |
 | `docs/testing.md` | 总工程测试策略、集成测试 |
 | `docs/reference.md` | 关键文件路径、子工程入口、已知扩展点 |
-| `docs/deployment-yunxiao.md` | 部署、云效流水线、ACK 相关操作（**含最高优先级安全约束：云效一切写操作禁止直接执行，详见文档**） |
+| `docs/deployment-yunxiao.md` | 部署、云效流水线、ACK 相关操作（**含最高优先级安全约束：所有远程非只读操作禁止直接执行，需 `goon` 确认，详见文档**） |
 
-> ⛔ **云效安全约束（不可违背）**：凡会影响线上发布或应用的云效操作（创建、修改、编辑、删除、运行、部署、回滚等），一律不得直接执行，必须人工审核确认 —— 任何模式（含 auto mode）都不例外；只允许只读查询（list/get/search）。一次性授权不扩展到其他操作。细则见 `docs/deployment-yunxiao.md`。
+> ⛔ **远程操作安全约束（不可违背）**：凡**非本机的远程操作**——云效、ACK、ACR、Codeup、GitHub、SSH 远程主机、任何云服务或第三方 API——只要是非只读操作（创建、修改、编辑、删除、运行、部署、回滚、push、发布等一切会改变远端状态的动作），一律不得直接执行；必须先**列出待执行的非只读操作清单**，等待人工确认，当且仅当用户回复 **`goon`** 后才执行。任何模式（含 auto mode / 自动批准）都不例外。只读操作（list/get/search 等状态查询）可自由执行。`goon` 授权仅对清单中列明的操作生效，不扩展到其他操作或后续新操作。细则见 `docs/deployment-yunxiao.md`。
 
 > 🔐 **隐私信息存储规则（不可违背）**：一切密钥、凭证、云上资源标识（AK/SK、密码、token、服务连接 ID、实例地址等）**不得写入任何会被 git 追踪的文件**——包括代码、配置文件、部署 yaml、文档示例。统一存放 `.secrets/*.env`（已 gitignore），使用时 `source` 加载环境变量。云效 PAT 只走环境变量 `ALIBABA_CLOUD_YUNXIAO_ACCESS_TOKEN`，不写入任何文件。交付产物（Dockerfile、K8s yaml、文档）里只允许出现环境变量引用或 `<占位符>`，禁止出现具体值。
 
