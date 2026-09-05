@@ -29,43 +29,44 @@
 
 > K8s Secret **不入库、不提供 yaml 文件**——真值只存 `.secrets/gateway-deploy.env`，通过环境变量方式创建（见步骤 1）。避免真值被误提交到 git。
 
-## 步骤 1：ACK 创建 namespace + Secret
+## 步骤 1：ACK 确认 namespace + Secret
 
-先加载敏感配置，再从环境变量生成 Secret（真值不入库）：
+`deployment.yaml` 统一引用单个 Secret `me-credentials`（含 `NACOS_HOST`/`NACOS_AK`/`NACOS_SK`/`OFFLINE_TOKEN`/`ME_ENCRYPT_PASSWORD` 全部 key）。**Secret 已在 ACK 集群配好**，部署前只需确认存在：
 
 ```bash
-# 加载敏感配置
+# 加载部署参数
 source .secrets/gateway-deploy.env
 
-# 创建 namespace
-kubectl create namespace "app-$ENV" --dry-run=client -o yaml | kubectl apply -f -
+# 确认 namespace 存在
+kubectl get namespace "app-$ENV"
 
-# 从环境变量创建三个 Secret（真值只存在于 .secrets/，不入库）
-kubectl create secret generic mse-nacos-credentials \
-  --from-literal=nacos-host="$MSE_NACOS_HOST" \
-  --from-literal=nacos-ak="$MSE_NACOS_AK" \
-  --from-literal=nacos-sk="$MSE_NACOS_SK" \
-  --namespace="app-$ENV" --dry-run=client -o yaml | kubectl apply -f -
+# 确认 me-credentials Secret 存在且包含全部 key
+kubectl get secret me-credentials -n "app-$ENV" -o jsonpath='{.data}' | grep -o '"NACOS_HOST\|NACOS_AK\|NACOS_SK\|OFFLINE_TOKEN\|ME_ENCRYPT_PASSWORD'
+# 期望：5 个 key 全部出现
+```
 
-kubectl create secret generic gateway-jwt-secret \
-  --from-literal=jwt-secret="$GATEWAY_JWT_SECRET" \
-  --namespace="app-$ENV" --dry-run=client -o yaml | kubectl apply -f -
+> Secret 真值由人工在 ACK 集群配置，不通过 AI 注入、不入库。若后续需重建，参考下方"重建 Secret 命令"。
 
-kubectl create secret generic gateway-offline-token \
-  --from-literal=offline-token="$GATEWAY_OFFLINE_TOKEN" \
+<details>
+<summary>重建 Secret 命令（仅参考，真值不入库）</summary>
+
+```bash
+kubectl create secret generic me-credentials \
+  --from-literal=NACOS_HOST="<NACOS地址>" \
+  --from-literal=NACOS_AK="<AK>" \
+  --from-literal=NACOS_SK="<SK>" \
+  --from-literal=OFFLINE_TOKEN="<下线token>" \
+  --from-literal=ME_ENCRYPT_PASSWORD="<加密密码>" \
   --namespace="app-$ENV" --dry-run=client -o yaml | kubectl apply -f -
 ```
 
-> ⛔ **不提供 secret yaml 文件**——真值只存 `.secrets/`（已 gitignore），通过上面的 `--from-literal` 命令直接注入 K8s，不落盘到任何会被 git 追踪的文件。
+</details>
 
-涉及的敏感变量（定义在 `.secrets/gateway-deploy.env`）：
+流水线部署时需要传值的变量（定义在 `.secrets/gateway-deploy.env`）：
 
 | 环境变量 | 用途 |
 |---|---|
-| `MSE_NACOS_HOST` | MSE Nacos 实例地址 |
-| `MSE_NACOS_AK` / `MSE_NACOS_SK` | MSE Nacos 凭证 |
-| `GATEWAY_JWT_SECRET` | JWT 签名密钥（≥256 位，与下游 `me.auth.jwt.secret` 同一把） |
-| `GATEWAY_OFFLINE_TOKEN` | 优雅下线 endpoint token |
+| `SLS_PROJECT` | 阿里云 SLS 日志项目（`deployment.yaml` `aliyun_logs_*_project` 占位符引用，流水线 IMAGES 注入） |
 
 ## 步骤 2：ACR 创建镜像仓库
 
