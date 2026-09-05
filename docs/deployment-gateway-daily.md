@@ -17,7 +17,7 @@
 | ACR 镜像仓库 | 已创建仓库 | 或复用现有，按组织约定 |
 | 云效组织 | 已加入，PAT 已设置 | `source .secrets/yunxiao-identity.env` |
 | GitHub 服务连接 | 已在云效控制台建立 | OAuth 授权 `$GITHUB_REPO` 仓库一次性 |
-| JDK 25 | 本地已安装 JDK 25 | 仅本地验证用，路径按本机实际调整 |
+| JDK 21 | 本地已安装 JDK 21 | 仅本地验证用，路径按本机实际调整 |
 
 ## 产物清单
 
@@ -100,7 +100,7 @@ aliyun devops flow-get-pipeline \
 |---|---|
 | 代码源 | GitHub `$GITHUB_REPO` + 服务连接 `$YUNXIAO_GITHUB_SERVICE_CONNECTION_ID` + 分支 `$GITHUB_BRANCH` |
 | Maven 构建命令 | `mvn -B clean package -pl frame-me-launcher/frame-me-gateway -am -Dmaven.test.skip=true`（在 `frame-me-parent/` 目录执行） |
-| JDK 版本 | jdk25（若云效构建环境无 JDK25，需自定义构建镜像或用 `maven:3.9-eclipse-temurin-25`） |
+| JDK 版本 | jdk21（若云效构建环境无 JDK21，需自定义构建镜像或用 `maven:3.9-eclipse-temurin-21`） |
 | ACR 服务连接 ID | `$YUNXIAO_ACR_SERVICE_CONNECTION_ID` |
 | ACR 实例 / 命名空间 / 仓库 | `$ACR_INSTANCE` / `$ACR_NAMESPACE` / `$ACR_REPO` |
 | K8s 服务连接 ID | `$YUNXIAO_K8S_SERVICE_CONNECTION_ID` |
@@ -216,9 +216,9 @@ kubectl rollout undo deployment/"$PROJECT_NAME" -n "app-$ENV" --to-revision=<N>
 # 0. 如需连非本地 Nacos，加载敏感配置
 # source .secrets/gateway-deploy.env
 
-# 1. Maven 构建（JAVA_HOME 指向本机 JDK 25 安装路径）
+# 1. Maven 构建（JAVA_HOME 指向本机 JDK 21 安装路径）
 cd frame-me-parent
-export JAVA_HOME=<JDK_25_HOME>
+export JAVA_HOME=<JDK_21_HOME>
 ./mvnw -pl frame-me-launcher/frame-me-gateway -am clean package -DskipTests
 
 # 2. Docker 构建镜像

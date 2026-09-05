@@ -9,7 +9,7 @@
 - 每个子工程在独立子目录中维护，拥有独立的构建、测试、部署生命周期。
 - 总工程通过 `docs/projects.md` 统一索引所有子工程，并提供跨工程的约定与架构。
 - 当前已集成的子工程：
-  - `frame-me-parent`：Spring Boot 4.0.7 + Java 25 的多模块 Maven 脚手架。
+  - `frame-me-parent`：Spring Boot 4.0.7 + Java 21 的多模块 Maven 脚手架。
   - `fm-demo`：基于 `frame-me-parent` 的演示聚合服务（`fm-demo-api` + `fm-demo-service`）。
 
 ## 阅读前置

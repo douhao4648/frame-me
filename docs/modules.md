@@ -5,7 +5,7 @@
 | 目录 | 职责 |
 |---|---|
 | `docs/` | 总工程知识库与跨工程约定 |
-| `frame-me-parent/` | Spring Boot 4.0.7 + Java 25 多模块 Maven 脚手架，提供 starter 体系 |
+| `frame-me-parent/` | Spring Boot 4.0.7 + Java 21 多模块 Maven 脚手架，提供 starter 体系 |
 | `fm-demo/` | 基于 `frame-me-parent` 的演示聚合服务 |
 
 ## 子工程模块详情

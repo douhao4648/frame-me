@@ -6,7 +6,7 @@
 
 | 子工程 | 说明 |
 |---|---|
-| [`frame-me-parent`](./frame-me-parent) | Spring Boot 4.0.7 + Java 25 多模块 Maven 脚手架（starter 体系：base/auth/redis/cache/审计/加密/云组件等） |
+| [`frame-me-parent`](./frame-me-parent) | Spring Boot 4.0.7 + Java 21 多模块 Maven 脚手架（starter 体系：base/auth/redis/cache/审计/加密/云组件等） |
 | [`fm-demo`](./fm-demo) | 基于 `frame-me-parent` 的演示聚合服务（`fm-demo-api` + `fm-demo-service`） |
 
 ## 文档导航

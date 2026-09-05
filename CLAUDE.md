@@ -37,7 +37,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 | 子工程 | 路径 | 说明 |
 |---|---|---|
-| `frame-me-parent` | `./frame-me-parent` | Spring Boot 4.0.7 + Java 25 多模块 Maven 脚手架 |
+| `frame-me-parent` | `./frame-me-parent` | Spring Boot 4.0.7 + Java 21 多模块 Maven 脚手架 |
 | `fm-demo` | `./fm-demo` | 基于 `frame-me-parent` 的演示聚合服务 |
 
 新增子工程后，应更新 `docs/projects.md` 并确保该子工程目录下存在独立的 `CLAUDE.md` + `docs/`。
