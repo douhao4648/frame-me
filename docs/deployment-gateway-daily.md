@@ -111,6 +111,43 @@ aliyun devops flow-get-pipeline \
 
 > 模板的 ACR/K8s 服务连接、构建节点组等组织级配置原样复用，只需把模板里的具体 ID 换成上面的环境变量值。
 
+### 云效"设置环境变量"执行命令步骤（可视化编排）
+
+流水线可视化编排下，在"构建"阶段前手动加一个「执行命令」步骤：计算构建参数（`BUILD_DATE`/`GIT_COMMIT`/`TAG`）并通过 `$FLOW_ENV` 导出，供后续「构建镜像并推送 ACR」的 build args 与「部署」阶段的 `IMAGES` JSON 引用。
+
+> 用 `$FLOW_ENV`（追加写 `>>`）而非 `.env`——公共构建集群跑在容器环境，`.env` 不被自动读取。变量名保留 `USER_` 前缀仅为命名约定，引用时 `${USER_xxx}`。
+
+```bash
+PROJECT_NAME=frame-me-gateway
+PROJECT_VERSION=1.0.0-SNAPSHOT
+ENV=daily
+REPLICAS_NUM=1
+SLS_PROJECT=app-daily
+
+BUILD_DATE=$(date +%Y%m%d%H%M%S)
+GIT_COMMIT=${CI_COMMIT_SHA}
+TAG="$PROJECT_NAME-$PROJECT_VERSION-$ENV-$BUILD_DATE"
+
+echo "${PROJECT_NAME}:${PROJECT_VERSION}:${ENV}:${REPLICAS_NUM}:${SLS_PROJECT}:${GIT_COMMIT}:${TAG}"
+
+echo "USER_PROJECT_NAME=${PROJECT_NAME}" >> "$FLOW_ENV"
+echo "USER_PROJECT_VERSION=${PROJECT_VERSION}" >> "$FLOW_ENV"
+echo "USER_ENV=${ENV}" >> "$FLOW_ENV"
+echo "USER_REPLICAS_NUM=${REPLICAS_NUM}" >> "$FLOW_ENV"
+echo "USER_SLS_PROJECT=${SLS_PROJECT}" >> "$FLOW_ENV"
+echo "USER_BUILD_DATE=${BUILD_DATE}" >> "$FLOW_ENV"
+echo "USER_GIT_COMMIT=${GIT_COMMIT}" >> "$FLOW_ENV"
+echo "USER_TAG=${TAG}" >> "$FLOW_ENV"
+```
+
+导出变量与下游消费点：
+
+| 变量 | 消费点 |
+|---|---|
+| `USER_PROJECT_NAME` / `USER_PROJECT_VERSION` / `USER_ENV` / `USER_BUILD_DATE` / `USER_GIT_COMMIT` | 镜像构建步骤的 build args（Dockerfile 5 个必填 `ARG`） |
+| `USER_TAG` | 镜像 tag（含时间戳，替换默认 tag） |
+| `USER_PROJECT_NAME` / `USER_ENV` / `USER_REPLICAS_NUM` / `USER_SLS_PROJECT` | 部署阶段 `IMAGES` JSON（`SLS_PROJECT` 供 deployment.yaml 的 `aliyun_logs_*_project` 占位符） |
+
 ### 云效"部署"阶段 IMAGES JSON 配置
 
 `IMAGES` 字段的值（JSON），变量从"设置环境变量"阶段注入：
@@ -207,6 +244,7 @@ kubectl rollout undo deployment/"$PROJECT_NAME" -n "app-$ENV" --to-revision=<N>
 | Nacos 注册失败 | 检查 `mse-nacos-credentials` Secret 的 `nacos-host`/`nacos-ak`/`nacos-sk` 是否正确，网络是否通 |
 | 路由 404 | 确认下游服务已注册到同一 MSE Nacos；`discovery.locator.enabled=true` 自动路由需下游服务名匹配 |
 | 优雅下线不生效 | 确认 `OFFLINE_TOKEN` Secret 值与配置一致，`terminationGracePeriodSeconds` ≥ 60s |
+| Kubectl 发布报 `outputs2template` panic（"存在未定义的变量"） | 两个原因：① yaml 里 `${IMAGE}` 未替换——部署步骤的 `IMAGE` 变量必须选「上游镜像构建任务的输出 → 镜像 VPC 地址」，不能手填 `${上游构建步骤.DOCKER_OUTPUT_VPC}`（步骤名是占位符）；② preStop 里 `${OFFLINE_TOKEN}` 是运行时占位符，需在「Kubernetes 发布」步骤勾选「跳过模板校验」（paC 的 `skipVariableVerify: true`） |
 
 ## 本地验证（可选，部署前自测）
 
