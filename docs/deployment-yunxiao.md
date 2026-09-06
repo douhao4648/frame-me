@@ -105,10 +105,14 @@ ACR 镜像仓库连接、ACK 集群连接均为**组织级服务连接**，一�
 - [x] 目标子工程：`frame-me-gateway`
 - [x] 参照的现有 Java 流水线：模板 ID 存 `.secrets/gateway-deploy.env` 的 `YUNXIAO_TEMPLATE_PIPELINE_ID`
 - [x] 构建分支：`.secrets/gateway-deploy.env` 的 `GITHUB_BRANCH`
-- [ ] GitHub 服务连接是否已建（未建则控制台授权一次）
-- [ ] ACK 集群 / namespace / deployment 名：daily / `frame-me-gateway`
+- [x] GitHub 服务连接已建（云端唯一 GitHub 连接，paC YAML 用其 uuid，见 `.secrets/gateway-deploy.env`）
+- [x] ACK 集群 / namespace / deployment 名：daily / `frame-me-gateway`
 - [x] 编写子工程 `Dockerfile` 与 `deployment.yaml`（与 Dockerfile 同级，见 `frame-me-parent/frame-me-launcher/frame-me-gateway/`）
 - [x] 端到端部署文档：`docs/deployment-gateway-daily.md`
+- [x] 流水线已创建：`FRAME-ME-GATEWAY-DAILY`（ID 存 `.secrets/gateway-deploy.env` 的 `YUNXIAO_GATEWAY_PIPELINE_ID`，2026-09-06）
+  - 构建/部署集群：`public/cn-hongkong`（模板配置的私有集群 `K8S-4` 已不存在；公共北京集群 clone GitHub TLS 握手失败，香港集群正常）
+  - 未配 push 自动触发（手动触发）；已加入分组；首次运行需单独授权
+  - 首次端到端运行成功（2026-09-06）：2/2 Pod 就绪、健康探针通过、MSE Nacos daily 命名空间注册正常（经云监控 umodel 验证）
 
 ### 通用待办（首次执行前确认）
 
