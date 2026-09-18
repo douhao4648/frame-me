@@ -20,6 +20,7 @@ Frame_Me/
 - Java 运行时环境暂定 **JDK 21**：优先保证云产品（如阿里云 ACK/ACR、云效流水线等）的兼容性与官方镜像支持。
 - 架构已按 **JDK 25 LTS** 就绪设计，待云产品支持成熟后可**无感升级**，业务代码无需改造。
 - 本框架是 **frame-me 系列「超级个体」定位探索与实施**的一环：服务端脚手架和示例工程先行，后续将陆续推出前端脚手架、微信小程序、iOS/Android 移动端、桌面端应用及企业级 AI Agent 等探索工程。
+  - 前端脚手架已落地：`frame-me-web`（管理后台方向）——`packages/` 发包共享层（`@frame-me/config|request|api-types|create`，GitHub Packages）+ `templates/admin` UI 壳模板；业务项目 `npm init @frame-me` 生成、npm 依赖集成共享层，形态对标 `frame-me-parent` 的「一生万物」。登录走 SSO 方式 A（frame-me-sso + RP 后端 frame-me-sso-starter），契约类型经 `frame-me-gen-api` 从后端 OpenAPI 生成。
 
 ## 分层原则
 

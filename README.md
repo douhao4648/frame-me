@@ -22,6 +22,7 @@
 |---|---|
 | [`frame-me-parent`](./frame-me-parent) | Spring Boot 4.0.7 + Java 21 多模块 Maven 脚手架（starter 体系：base/auth/redis/cache/审计/加密/云组件等） |
 | [`fm-demo`](./fm-demo) | 基于 `frame-me-parent` 的演示聚合服务（`fm-demo-api` + `fm-demo-service`） |
+| [`frame-me-web`](./frame-me-web) | 管理后台前端脚手架（React 19 + Vite 8 + antd 6 + ProComponents v3）：`npm init @frame-me` 生成业务工程，`@frame-me/*` 共享层发包集成 |
 
 ## 文档导航
 
